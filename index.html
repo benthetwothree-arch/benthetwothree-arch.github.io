@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEN // system status</title>
+
+<!-- 
+  MECHANICS NOTE FOR LEARNING:
+  This is one single HTML file containing HTML (structure), CSS (styling, 
+  in the <style> tag) and JavaScript (behaviour, in the <script> tag at 
+  the bottom). Real sites often split these into separate .html/.css/.js 
+  files, but keeping it all in one file is the simplest way to start.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- Design tokens ---------- */
+  :root {
+    --bg: #10151c;
+    --panel: #171f29;
+    --panel-hover: #1c2530;
+    --border: #2a3542;
+    --text: #e7eaee;
+    --text-dim: #8b96a5;
+    --accent: #e8a33d;      /* amber — "signal" colour */
+    --teal: #4fa8a0;        /* secondary status colour */
+    --red: #d9534f;         /* alert colour, used sparingly */
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  a { color: var(--accent); }
+
+  /* ---------- Layout shell ---------- */
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* ---------- Top status bar (the "hero") ---------- */
+  header.hero {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 0 rgba(79, 168, 160, 0.6);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(79, 168, 160, 0.5); }
+    70%  { box-shadow: 0 0 0 7px rgba(79, 168, 160, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(79, 168, 160, 0); }
+  }
+
+  header.hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  header.hero .role {
+    color: var(--text-dim);
+    font-size: 17px;
+  }
+
+  .uptime-block {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .uptime-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  #uptime {
+    font-size: 15px;
+    color: var(--accent);
+  }
+
+  /* ---------- Sections styled as "services" ---------- */
+  section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  .service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .service-header h2 { font-size: 20px; }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(79, 168, 160, 0.12);
+    color: var(--teal);
+    border: 1px solid rgba(79, 168, 160, 0.3);
+  }
+
+  section p { color: var(--text-dim); max-width: 60ch; }
+
+  /* Skills / interests grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .card:hover { background: var(--panel-hover); transform: translateY(-2px); }
+
+  .card .k { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
+  .card .v { font-size: 14px; margin-top: 4px; }
+
+  /* ---------- Footer / endpoints ---------- */
+  footer {
+    padding-top: 40px;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  .endpoint-list { list-style: none; padding: 0; margin: 16px 0 0; }
+  .endpoint-list li {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .endpoint-list li:last-child { border-bottom: none; }
+  .endpoint-list .method { color: var(--accent); font-size: 12px; width: 46px; flex-shrink: 0; }
+
+  @media (max-width: 480px) {
+    header.hero h1 { font-size: 32px; }
+    .uptime-block { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ===== HERO / STATUS BAR ===== -->
+  <header class="hero">
+    <div class="status-row mono">
+      <span class="dot"></span>
+      <span>ALL SYSTEMS OPERATIONAL</span>
+    </div>
+
+    <h1>Ben</h1>
+    <div class="role">ICT Infrastructure Engineer · Tier 3 Support</div>
+
+    <div class="uptime-block mono">
+      <span class="uptime-label">career uptime</span>
+      <span id="uptime">calculating…</span>
+    </div>
+  </header>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="service-header">
+      <h2>about</h2>
+      <span class="badge mono">200 OK</span>
+    </div>
+    <p>
+      I work in Tier 3 infrastructure support, having come up through an apprenticeship 
+      before moving into full-time engineering. I like understanding how systems actually 
+      work under the hood — whether that's a network stack, an investment portfolio, or 
+      a football tactic.
+    </p>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills">
+    <div class="service-header">
+      <h2>skills</h2>
+      <span class="badge mono">200 OK</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="k">infrastructure</div>
+        <div class="v">Networking, systems support, troubleshooting</div>
+      </div>
+      <div class="card">
+        <div class="k">support</div>
+        <div class="v">Tier 3 escalation, incident resolution</div>
+      </div>
+      <div class="card">
+        <div class="k">finance</div>
+        <div class="v">ISAs, CGT, pensions, portfolio modelling</div>
+      </div>
+      <div class="card">
+        <div class="k">learning</div>
+        <div class="v">Currently: this website</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INTERESTS ===== -->
+  <section id="interests">
+    <div class="service-header">
+      <h2>interests</h2>
+      <span class="badge mono">200 OK</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="k">football</div>
+        <div class="v">Watching and following the game</div>
+      </div>
+      <div class="card">
+        <div class="k">gaming</div>
+        <div class="v">Fortnite — competitive</div>
+      </div>
+      <div class="card">
+        <div class="k">personal finance</div>
+        <div class="v">Building spreadsheets nobody asked for</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <footer>
+    <h2 style="font-size:16px; color: var(--text);">endpoints</h2>
+    <ul class="endpoint-list mono">
+      <li><span class="method">GET</span> <a href="mailto:you@example.com">you@example.com</a></li>
+      <li><span class="method">GET</span> <a href="#" target="_blank">github.com/yourusername</a></li>
+      <li><span class="method">GET</span> <a href="#" target="_blank">linkedin.com/in/yourusername</a></li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+  /* 
+    MECHANICS NOTE: 
+    This calculates the time elapsed since a fixed date and updates it 
+    every second. It's a simple demo of:
+      - Date math (subtracting two dates gives milliseconds)
+      - setInterval() to re-run code repeatedly
+      - Basic DOM manipulation (finding an element by id, changing its text)
+
+    Change START_DATE to whatever date you want to count from — 
+    e.g. when you started your apprenticeship or your current job.
+  */
+  const START_DATE = new Date('2024-01-01T00:00:00');
+
+  function updateUptime() {
+    const now = new Date();
+    let diff = Math.floor((now - START_DATE) / 1000); // seconds elapsed
+
+    const days = Math.floor(diff / 86400);
+    diff -= days * 86400;
+    const hours = Math.floor(diff / 3600);
+    diff -= hours * 3600;
+    const minutes = Math.floor(diff / 60);
+    const seconds = diff - minutes * 60;
+
+    document.getElementById('uptime').textContent =
+      `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  updateUptime();
+  setInterval(updateUptime, 1000);
+</script>
+
+</body>
+</html>
