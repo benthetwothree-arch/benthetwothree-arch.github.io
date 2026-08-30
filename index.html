@@ -14,21 +14,25 @@
 -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-  /* ---------- Design tokens ---------- */
+  /* ---------- Design tokens ----------
+     Warm editorial palette — deliberately avoids the dark
+     navy/grey "dashboard" look. Cream paper background,
+     forest green as primary, burnt orange as accent. */
   :root {
-    --bg: #10151c;
-    --panel: #171f29;
-    --panel-hover: #1c2530;
-    --border: #2a3542;
-    --text: #e7eaee;
-    --text-dim: #8b96a5;
-    --accent: #e8a33d;      /* amber — "signal" colour */
-    --teal: #4fa8a0;        /* secondary status colour */
-    --red: #d9534f;         /* alert colour, used sparingly */
-    --radius: 6px;
+    --bg: #f4ede1;
+    --bg-alt: #ece2d0;
+    --panel: #fffaf0;
+    --border: #d8c9ab;
+    --text: #2b2a22;
+    --text-dim: #6b6552;
+    --accent: #c4571f;      /* burnt orange — accent colour */
+    --accent-soft: rgba(196, 87, 31, 0.12);
+    --green: #34503f;       /* deep forest green — primary colour */
+    --green-soft: rgba(52, 80, 63, 0.1);
+    --radius: 4px;
   }
 
   * { box-sizing: border-box; }
@@ -38,62 +42,62 @@
   body {
     margin: 0;
     background: var(--bg);
+    background-image:
+      radial-gradient(var(--border) 0.6px, transparent 0.6px);
+    background-size: 18px 18px;
     color: var(--text);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.55;
+    font-family: 'Work Sans', sans-serif;
+    line-height: 1.6;
   }
 
-  h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
+  h1, h2, h3 { font-family: 'Fraunces', serif; margin: 0; }
 
   .mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     letter-spacing: 0.02em;
   }
 
-  a { color: var(--accent); }
+  a { color: var(--accent); text-decoration-thickness: 1.5px; }
 
   /* ---------- Layout shell ---------- */
   .wrap {
-    max-width: 780px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 0 20px 80px;
+    padding: 60px 20px 90px;
   }
 
-  /* ---------- Top status bar (the "hero") ---------- */
+  /* ---------- Hero ---------- */
   header.hero {
-    padding: 48px 0 32px;
-    border-bottom: 1px solid var(--border);
+    position: relative;
+    padding: 0 0 36px;
+    border-bottom: 2px solid var(--text);
   }
 
   .status-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 24px;
-    font-size: 13px;
-    color: var(--text-dim);
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   .dot {
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    background: var(--teal);
-    box-shadow: 0 0 0 0 rgba(79, 168, 160, 0.6);
-    animation: pulse 2s infinite;
+    background: var(--accent);
     flex-shrink: 0;
   }
 
-  @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(79, 168, 160, 0.5); }
-    70%  { box-shadow: 0 0 0 7px rgba(79, 168, 160, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(79, 168, 160, 0); }
-  }
-
   header.hero h1 {
-    font-size: 42px;
-    font-weight: 700;
-    margin-bottom: 6px;
+    font-size: 64px;
+    font-weight: 600;
+    font-style: italic;
+    margin-bottom: 4px;
+    color: var(--green);
   }
 
   header.hero .role {
@@ -103,9 +107,10 @@
 
   .uptime-block {
     margin-top: 28px;
-    padding: 16px 18px;
+    padding: 14px 18px;
     background: var(--panel);
     border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
     border-radius: var(--radius);
     display: flex;
     justify-content: space-between;
@@ -118,77 +123,107 @@
     font-size: 12px;
     color: var(--text-dim);
     text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   #uptime {
     font-size: 15px;
     color: var(--accent);
+    font-weight: 500;
   }
 
-  /* ---------- Sections styled as "services" ---------- */
-  section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+  /* ---------- Sections ---------- */
+  section { padding: 44px 0; border-bottom: 1px solid var(--border); }
   section:last-of-type { border-bottom: none; }
 
   .service-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    align-items: baseline;
+    margin-bottom: 18px;
   }
 
-  .service-header h2 { font-size: 20px; }
+  .service-header h2 {
+    font-size: 26px;
+    font-style: italic;
+    color: var(--green);
+  }
 
   .badge {
     font-size: 11px;
-    padding: 3px 9px;
+    padding: 3px 10px;
     border-radius: 999px;
-    background: rgba(79, 168, 160, 0.12);
-    color: var(--teal);
-    border: 1px solid rgba(79, 168, 160, 0.3);
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(196, 87, 31, 0.35);
+    font-family: 'IBM Plex Mono', monospace;
   }
 
-  section p { color: var(--text-dim); max-width: 60ch; }
+  section p { color: var(--text-dim); max-width: 58ch; }
 
   /* Skills / interests grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-top: 16px;
+    gap: 14px;
+    margin-top: 18px;
   }
 
   .card {
     background: var(--panel);
     border: 1px solid var(--border);
+    border-top: 3px solid var(--green);
     border-radius: var(--radius);
-    padding: 14px 16px;
-    transition: background 0.15s ease, transform 0.15s ease;
+    padding: 16px 18px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .card:hover { background: var(--panel-hover); transform: translateY(-2px); }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(43, 42, 34, 0.1);
+  }
 
-  .card .k { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
-  .card .v { font-size: 14px; margin-top: 4px; }
+  .card .k {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .card .v { font-size: 15px; margin-top: 6px; }
 
   /* ---------- Footer / endpoints ---------- */
   footer {
-    padding-top: 40px;
+    padding-top: 44px;
     font-size: 14px;
     color: var(--text-dim);
+  }
+
+  footer h2 {
+    font-size: 20px;
+    font-style: italic;
+    color: var(--green);
+    margin-bottom: 4px;
   }
 
   .endpoint-list { list-style: none; padding: 0; margin: 16px 0 0; }
   .endpoint-list li {
     display: flex;
     gap: 10px;
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px dashed var(--border);
   }
   .endpoint-list li:last-child { border-bottom: none; }
-  .endpoint-list .method { color: var(--accent); font-size: 12px; width: 46px; flex-shrink: 0; }
+  .endpoint-list .method {
+    color: var(--green);
+    font-size: 12px;
+    width: 46px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
 
   @media (max-width: 480px) {
-    header.hero h1 { font-size: 32px; }
+    header.hero h1 { font-size: 42px; }
     .uptime-block { flex-direction: column; align-items: flex-start; }
   }
 </style>
@@ -220,10 +255,10 @@
       <span class="badge mono">200 OK</span>
     </div>
     <p>
-      I work in a Tier 3 IT infrastructure support environment, having come up through a level-3 apprenticeship
-      In which I acheived a Distinction before moving into full-time engineering.
-      I like understanding how systems actually work under the hood and adapting standard approaches to
-      maximise efficiency.
+      I work in Tier 3 infrastructure support, having come up through an apprenticeship 
+      before moving into full-time engineering. I like understanding how systems actually 
+      work under the hood — whether that's a network stack, an investment portfolio, or 
+      a football tactic.
     </p>
   </section>
 
@@ -236,7 +271,7 @@
     <div class="grid">
       <div class="card">
         <div class="k">infrastructure</div>
-        <div class="v">Networking, systems support, virtualisation & troubleshooting</div>
+        <div class="v">Networking, systems support, troubleshooting</div>
       </div>
       <div class="card">
         <div class="k">support</div>
@@ -244,7 +279,7 @@
       </div>
       <div class="card">
         <div class="k">finance</div>
-        <div class="v">ISAs, pensions, portfolio's</div>
+        <div class="v">ISAs, CGT, pensions, portfolio modelling</div>
       </div>
       <div class="card">
         <div class="k">learning</div>
@@ -262,22 +297,26 @@
     <div class="grid">
       <div class="card">
         <div class="k">football</div>
-        <div class="v">Playing and watching Spurs/Hull City inevitably lose </div>
+        <div class="v">Watching and following the game</div>
       </div>
+      <div class="card">
+        <div class="k">gaming</div>
+        <div class="v">Fortnite — competitive</div>
       </div>
       <div class="card">
         <div class="k">personal finance</div>
-        <div class="v">Building spreadsheets, tracking and optimising my portfolio</div>
+        <div class="v">Building spreadsheets nobody asked for</div>
       </div>
     </div>
   </section>
 
   <!-- ===== CONTACT ===== -->
   <footer>
-    <h2 style="font-size:16px; color: var(--text);">endpoints</h2>
+    <h2>endpoints</h2>
     <ul class="endpoint-list mono">
-      <li><span class="method">GET</span> <a href="mailto:you@example.com">benthetwothree@gmail.com</a></li>
-      <li><span class="method">GET</span> <a href="#" target="_blank">benthetwothree-arch.github.io</a></li>
+      <li><span class="method">GET</span> <a href="mailto:you@example.com">you@example.com</a></li>
+      <li><span class="method">GET</span> <a href="#" target="_blank">github.com/yourusername</a></li>
+      <li><span class="method">GET</span> <a href="#" target="_blank">linkedin.com/in/yourusername</a></li>
     </ul>
   </footer>
 
@@ -295,7 +334,7 @@
     Change START_DATE to whatever date you want to count from — 
     e.g. when you started your apprenticeship or your current job.
   */
-  const START_DATE = new Date('2024-10-07T00:00:00');
+  const START_DATE = new Date('2024-01-01T00:00:00');
 
   function updateUptime() {
     const now = new Date();
