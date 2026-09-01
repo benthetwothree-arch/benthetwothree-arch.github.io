@@ -5,22 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEN // system status</title>
 
-<!-- 
-  MECHANICS NOTE FOR LEARNING:
-  This is one single HTML file containing HTML (structure), CSS (styling, 
-  in the <style> tag) and JavaScript (behaviour, in the <script> tag at 
-  the bottom). Real sites often split these into separate .html/.css/.js 
-  files, but keeping it all in one file is the simplest way to start.
--->
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-  /* ---------- Design tokens ----------
-     Warm editorial palette — deliberately avoids the dark
-     navy/grey "dashboard" look. Cream paper background,
-     forest green as primary, burnt orange as accent. */
   :root {
     --bg: #f4ede1;
     --bg-alt: #ece2d0;
@@ -28,22 +16,20 @@
     --border: #d8c9ab;
     --text: #2b2a22;
     --text-dim: #6b6552;
-    --accent: #c4571f;      /* burnt orange — accent colour */
+    --accent: #c4571f;
     --accent-soft: rgba(196, 87, 31, 0.12);
-    --green: #34503f;       /* deep forest green — primary colour */
+    --green: #34503f;
     --green-soft: rgba(52, 80, 63, 0.1);
     --radius: 4px;
   }
 
   * { box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
     margin: 0;
     background: var(--bg);
-    background-image:
-      radial-gradient(var(--border) 0.6px, transparent 0.6px);
+    background-image: radial-gradient(var(--border) 0.6px, transparent 0.6px);
     background-size: 18px 18px;
     color: var(--text);
     font-family: 'Work Sans', sans-serif;
@@ -51,179 +37,75 @@
   }
 
   h1, h2, h3 { font-family: 'Fraunces', serif; margin: 0; }
-
-  .mono {
-    font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: 0.02em;
-  }
-
+  .mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em; }
   a { color: var(--accent); text-decoration-thickness: 1.5px; }
 
-  /* ---------- Layout shell ---------- */
-  .wrap {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 60px 20px 90px;
-  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 60px 20px 90px; }
 
-  /* ---------- Hero ---------- */
-  header.hero {
-    position: relative;
-    padding: 0 0 36px;
-    border-bottom: 2px solid var(--text);
-  }
+  header.hero { position: relative; padding: 0 0 36px; border-bottom: 2px solid var(--text); }
 
   .status-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    font-size: 12px; color: var(--green); text-transform: uppercase; letter-spacing: 0.08em;
   }
 
-  .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+  .hero-top { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+
+  .avatar {
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+    border: 3px solid var(--panel); outline: 2px solid var(--green); flex-shrink: 0;
   }
 
-  header.hero h1 {
-    font-size: 64px;
-    font-weight: 600;
-    font-style: italic;
-    margin-bottom: 4px;
-    color: var(--green);
-  }
-
-  header.hero .role {
-    color: var(--text-dim);
-    font-size: 17px;
-  }
+  header.hero h1 { font-size: 64px; font-weight: 600; font-style: italic; margin-bottom: 4px; color: var(--green); }
+  header.hero .role { color: var(--text-dim); font-size: 17px; }
 
   .uptime-block {
-    margin-top: 28px;
-    padding: 14px 18px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    border-radius: var(--radius);
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 8px;
+    margin-top: 28px; padding: 14px 18px; background: var(--panel);
+    border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius);
+    display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;
   }
 
-  .uptime-label {
-    font-size: 12px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  .uptime-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+  #uptime { font-size: 15px; color: var(--accent); font-weight: 500; }
 
-  #uptime {
-    font-size: 15px;
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  /* ---------- Sections ---------- */
   section { padding: 44px 0; border-bottom: 1px solid var(--border); }
   section:last-of-type { border-bottom: none; }
 
-  .service-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 18px;
-  }
-
-  .service-header h2 {
-    font-size: 26px;
-    font-style: italic;
-    color: var(--green);
-  }
+  .service-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+  .service-header h2 { font-size: 26px; font-style: italic; color: var(--green); }
 
   .badge {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    border: 1px solid rgba(196, 87, 31, 0.35);
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+    border: 1px solid rgba(196, 87, 31, 0.35); font-family: 'IBM Plex Mono', monospace;
   }
 
   section p { color: var(--text-dim); max-width: 58ch; }
 
-  /* Skills / interests grid */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 14px;
-    margin-top: 18px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-top: 18px; }
 
   .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--green);
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--green);
+    border-radius: var(--radius); padding: 16px 18px; transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(43, 42, 34, 0.1);
-  }
-
-  .card .k {
-    font-size: 11px;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-family: 'IBM Plex Mono', monospace;
-  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(43, 42, 34, 0.1); }
+  .card .k { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; font-family: 'IBM Plex Mono', monospace; }
   .card .v { font-size: 15px; margin-top: 6px; }
 
-  /* ---------- Footer / endpoints ---------- */
-  footer {
-    padding-top: 44px;
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-
-  footer h2 {
-    font-size: 20px;
-    font-style: italic;
-    color: var(--green);
-    margin-bottom: 4px;
-  }
+  footer { padding-top: 44px; font-size: 14px; color: var(--text-dim); }
+  footer h2 { font-size: 20px; font-style: italic; color: var(--green); margin-bottom: 4px; }
 
   .endpoint-list { list-style: none; padding: 0; margin: 16px 0 0; }
-  .endpoint-list li {
-    display: flex;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--border);
-  }
+  .endpoint-list li { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
   .endpoint-list li:last-child { border-bottom: none; }
-  .endpoint-list .method {
-    color: var(--green);
-    font-size: 12px;
-    width: 46px;
-    flex-shrink: 0;
-    font-weight: 500;
-  }
+  .endpoint-list .method { color: var(--green); font-size: 12px; width: 46px; flex-shrink: 0; font-weight: 500; }
 
   @media (max-width: 480px) {
     header.hero h1 { font-size: 42px; }
+    .avatar { width: 72px; height: 72px; }
     .uptime-block { flex-direction: column; align-items: flex-start; }
   }
 </style>
@@ -232,15 +114,24 @@
 
 <div class="wrap">
 
-  <!-- ===== HERO / STATUS BAR ===== -->
   <header class="hero">
     <div class="status-row mono">
       <span class="dot"></span>
       <span>ALL SYSTEMS OPERATIONAL</span>
     </div>
 
-    <h1>Ben</h1>
-    <div class="role">ICT Infrastructure Engineer · Tier 3 Support</div>
+    <div class="hero-top">
+      <!-- 
+        MECHANICS NOTE: src path assumes you upload your photo into an 
+        "images" folder in your repo, named profile.jpg. Change the 
+        filename here to match whatever you actually upload.
+      -->
+      <img src="images/profile.jpg" alt="Ben" class="avatar">
+      <div>
+        <h1>Ben</h1>
+        <div class="role">ICT Infrastructure Engineer · Tier 3 Support</div>
+      </div>
+    </div>
 
     <div class="uptime-block mono">
       <span class="uptime-label">career uptime</span>
@@ -248,7 +139,6 @@
     </div>
   </header>
 
-  <!-- ===== ABOUT ===== -->
   <section id="about">
     <div class="service-header">
       <h2>about</h2>
@@ -261,60 +151,36 @@
     </p>
   </section>
 
-  <!-- ===== SKILLS ===== -->
   <section id="skills">
     <div class="service-header">
       <h2>skills</h2>
       <span class="badge mono">200 OK</span>
     </div>
     <div class="grid">
-      <div class="card">
-        <div class="k">infrastructure</div>
-        <div class="v">Networking, systems support, virtualisation, troubleshooting</div>
-      </div>
-      <div class="card">
-        <div class="k">support</div>
-        <div class="v">Tier 3 escalation, incident resolution</div>
-      </div>
-      <div class="card">
-        <div class="k">finance</div>
-        <div class="v">ISAs, S&P 500, LISA, spreadsheets</div>
-      </div>
-      <div class="card">
-        <div class="k">learning</div>
-        <div class="v">website building, reading the bible</div>
-      </div>
+      <div class="card"><div class="k">infrastructure</div><div class="v">Networking, systems support, virtualisation, troubleshooting</div></div>
+      <div class="card"><div class="k">support</div><div class="v">Tier 3 escalation, incident resolution</div></div>
+      <div class="card"><div class="k">finance</div><div class="v">ISAs, S&P 500, LISA, spreadsheets</div></div>
+      <div class="card"><div class="k">learning</div><div class="v">website building, reading the bible</div></div>
     </div>
   </section>
 
-  <!-- ===== INTERESTS ===== -->
   <section id="interests">
     <div class="service-header">
       <h2>interests</h2>
       <span class="badge mono">200 OK</span>
     </div>
     <div class="grid">
-      <div class="card">
-        <div class="k">football</div>
-        <div class="v">Watching and following Spurs & Hull City</div>
-      </div>
-      <div class="card">
-        <div class="k">gaming</div>
-        <div class="v">Fortnite, Minecraft, Roblox</div>
-      </div>
-      <div class="card">
-        <div class="k">personal finance</div>
-        <div class="v">Building spreadsheets nobody asked for</div>
-      </div>
+      <div class="card"><div class="k">football</div><div class="v">Watching and following Spurs & Hull City</div></div>
+      <div class="card"><div class="k">gaming</div><div class="v">Fortnite, Minecraft, Roblox</div></div>
+      <div class="card"><div class="k">personal finance</div><div class="v">Building spreadsheets nobody asked for</div></div>
     </div>
   </section>
 
-  <!-- ===== CONTACT ===== -->
   <footer>
     <h2>endpoints</h2>
     <ul class="endpoint-list mono">
-      <li><span class="method">GET</span> <a href="mailto:you@example.com">ben14giles@gmail.com</a></li>
-      <li><span class="method">GET</span> <a href="#" target="_blank">github.com/benthetwothree-arch</a></li>
+      <li><span class="method">GET</span> <a href="mailto:ben14giles@gmail.com">ben14giles@gmail.com</a></li>
+      <li><span class="method">GET</span> <a href="https://github.com/benthetwothree-arch" target="_blank">github.com/benthetwothree-arch</a></li>
       <li><span class="method">GET</span> <a href="#" target="_blank">linkedin.com/in/bengiles</a></li>
     </ul>
   </footer>
@@ -322,32 +188,18 @@
 </div>
 
 <script>
-  /* 
-    MECHANICS NOTE: 
-    This calculates the time elapsed since a fixed date and updates it 
-    every second. It's a simple demo of:
-      - Date math (subtracting two dates gives milliseconds)
-      - setInterval() to re-run code repeatedly
-      - Basic DOM manipulation (finding an element by id, changing its text)
-
-    Change START_DATE to whatever date you want to count from — 
-    e.g. when you started your apprenticeship or your current job.
-  */
   const START_DATE = new Date('2024-01-01T00:00:00');
 
   function updateUptime() {
     const now = new Date();
-    let diff = Math.floor((now - START_DATE) / 1000); // seconds elapsed
-
+    let diff = Math.floor((now - START_DATE) / 1000);
     const days = Math.floor(diff / 86400);
     diff -= days * 86400;
     const hours = Math.floor(diff / 3600);
     diff -= hours * 3600;
     const minutes = Math.floor(diff / 60);
     const seconds = diff - minutes * 60;
-
-    document.getElementById('uptime').textContent =
-      `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    document.getElementById('uptime').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
   updateUptime();
